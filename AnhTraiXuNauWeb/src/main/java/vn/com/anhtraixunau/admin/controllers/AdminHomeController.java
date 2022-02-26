@@ -152,4 +152,13 @@ public class AdminHomeController {
 		
 		return view(modelMap, viewName, pageName, message);
 	}
+	
+	@GetMapping("staffPermission")
+	public String staffPermission(ModelMap modelMap) {
+		viewName = "admin/index";
+		pageName = "staffpermission.jsp";
+		message = "";
+		
+		return view(modelMap, viewName, pageName, message);
+	}
 }

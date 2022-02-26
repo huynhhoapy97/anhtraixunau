@@ -11,8 +11,8 @@
 	<div>
 		<form:form method="POST" action="admin/changePassword" modelAttribute="adminAccount">
 			<form:hidden path="username"></form:hidden>
-			<form:input type="text" placeholder="Mật khẩu" path="password" />
-			<form:input type="text" placeholder="Nhập lại mật khẩu" path="repassword" />
+			<form:input type="password" placeholder="Mật khẩu" path="password" />
+			<form:input type="password" placeholder="Nhập lại mật khẩu" path="repassword" />
 			<form:button>Xác nhận</form:button>
 		</form:form>
 	</div>

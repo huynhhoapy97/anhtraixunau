@@ -11,7 +11,7 @@
 	<div>
 		<form:form method="POST" action="admin/login" modelAttribute="adminAccount">
 			<div class="account">
-				<form:input type="text" placeholder="Tên tài khoản" path="username" />
+				<form:input type="text" placeholder="Tên tài khoản" autocomplete="off" path="username" />
 			</div>
 			<div class="manipulation">
 				<div class="forgetpassword">
