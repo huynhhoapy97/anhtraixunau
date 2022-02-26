@@ -1,0 +1,73 @@
+@charset "ISO-8859-1";
+html, body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+.mainview {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+.header {
+	width: 100%;
+	height: 100px;
+	/* background-color: blue; */
+}	
+.body {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	height: 500px;
+	/* background-color: green; */
+}	
+.login {
+	align-self: center;
+	display: grid;
+	grid-template-rows: 20% 20% 40% auto;
+	width: 300px;
+	height: 300px;
+	border: 1px solid #e0e0e0;
+    border-radius: 5px;
+	/* background-color: yellow; */
+}
+.brand {
+	justify-self: center;
+	align-self: center;
+	/* background-color: #FF5733; */
+}
+.title {
+	justify-self: center;
+	align-self: center;
+	/* background-color: #33BDFF; */
+}
+.account {
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	/* background-color: #AF33FF; */
+}
+.manipulation {
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	grid-template-columns: 50% 50%;
+	/* background-color: #FF339C; */
+}
+.forgetpassword {
+	justify-self: end;
+	/* background-color: #3DFF33; */
+}
+.continue { 
+	justify-self: center;
+	/* background-color: #33FFE2; */
+}
+.btn-admin-login {
+	justify-self: center;
+	/* background-color: #33FFE2; */
+}
