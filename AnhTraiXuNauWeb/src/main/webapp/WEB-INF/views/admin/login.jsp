@@ -1,5 +1,5 @@
 <%@ page language="java" pageEncoding="utf-8"%>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
 <div class="login">
 	<div class="brand">
