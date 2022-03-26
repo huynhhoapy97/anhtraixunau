@@ -8,6 +8,7 @@ import java.util.List;
 
 import vn.com.anhtraixunau.connections.OracleConnection;
 import vn.com.anhtraixunau.models.Department;
+import vn.com.anhtraixunau.models.StaffPermission;
 
 public class DepartmentDAOImpl implements DepartmentDAO {
 	private OracleConnection oracleConnection;
@@ -311,5 +312,44 @@ public class DepartmentDAOImpl implements DepartmentDAO {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public List<StaffPermission> getListStaffPermissionByDepartmentId(int departmentId) {
+		List<StaffPermission> listStaffPermission = new ArrayList<StaffPermission>();
+		String query = new String();
+		oracleConnection = new OracleConnection();
+		
+		try {
+			oracleConnection.setConnection(oracleConnection.connectToOracle());
+			
+			query = "{call atxn_department_permission_getbydepartmentid(?,?)}";
+			
+			oracleConnection.setCallableStatement(oracleConnection.getConnection().prepareCall(query));
+			
+			oracleConnection.getCallableStatement().setInt("i_departmentid", departmentId);
+			oracleConnection.getCallableStatement().registerOutParameter("o_result", Types.REF_CURSOR);
+			oracleConnection.getCallableStatement().execute();
+			
+			ResultSet resultSet = (ResultSet) oracleConnection.getCallableStatement().getObject("o_result");
+			while(resultSet.next()) {
+				int staffPermissionId = resultSet.getInt("sp_id");
+				String staffPermissionName = resultSet.getString("sp_name");
+				
+				StaffPermission staffPermission = new StaffPermission();
+				staffPermission.setId(staffPermissionId);
+				staffPermission.setName(staffPermissionName);
+				
+				listStaffPermission.add(staffPermission);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			oracleConnection.close();
+		}
+		
+		return listStaffPermission;
 	}
 }

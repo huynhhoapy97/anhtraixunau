@@ -3,6 +3,7 @@ package vn.com.anhtraixunau.repositories;
 import java.util.List;
 
 import vn.com.anhtraixunau.models.Department;
+import vn.com.anhtraixunau.models.StaffPermission;
 
 public interface DepartmentDAO {
 	public List<Department> getListDepartmentExisting();
@@ -14,4 +15,5 @@ public interface DepartmentDAO {
 	public int removeDepartmentPermission(int departmentId, int permissionId);
 	public int deleteDepartmentById(int id, String userName);
 	public int deleteDepartmentPermissionByDepartmentId(int departmentId);
+	public List<StaffPermission> getListStaffPermissionByDepartmentId(int departmentId);
 }

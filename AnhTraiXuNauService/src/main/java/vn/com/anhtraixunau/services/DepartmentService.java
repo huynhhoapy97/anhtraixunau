@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.anhtraixunau.models.Department;
+import vn.com.anhtraixunau.models.StaffPermission;
 import vn.com.anhtraixunau.repositories.DepartmentDAO;
 import vn.com.anhtraixunau.repositories.DepartmentDAOImpl;
 
@@ -134,5 +135,19 @@ public class DepartmentService {
 		}
 		
 		return result;
+	}
+	
+	public List<StaffPermission> getListStaffPermissionByDepartmentId(int departmentId){
+		List<StaffPermission> listStaffPermission = new ArrayList<StaffPermission>();
+		departmentDAO = new DepartmentDAOImpl();
+		
+		try {
+			listStaffPermission = departmentDAO.getListStaffPermissionByDepartmentId(departmentId);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return listStaffPermission;
 	}
 }

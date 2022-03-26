@@ -9,6 +9,9 @@
 	<body>
 		<h3>Giao diện quản lý nội dung</h3>
 		<div>
+			<a href="admin/staff">Quản lý nhân viên</a>
+		</div>
+		<div>
 			<a href="admin/department">Quản lý phòng ban</a>
 		</div>
 		<div>

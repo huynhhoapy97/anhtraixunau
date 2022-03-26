@@ -170,4 +170,13 @@ public class AdminHomeController {
 		
 		return view(modelMap, viewName, pageName, message);
 	}
+	
+	@GetMapping("staff")
+	public String staff(ModelMap modelMap) {
+		viewName = "admin/index";
+		pageName = "staff.jsp";
+		message = "";
+		
+		return view(modelMap, viewName, pageName, message);
+	}
 }

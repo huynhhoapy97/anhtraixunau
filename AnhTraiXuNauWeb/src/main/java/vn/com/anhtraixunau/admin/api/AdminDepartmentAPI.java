@@ -19,7 +19,6 @@ import vn.com.anhtraixunau.enums.DepartmentMessage;
 import vn.com.anhtraixunau.models.Department;
 import vn.com.anhtraixunau.models.StaffPermission;
 import vn.com.anhtraixunau.services.DepartmentService;
-import vn.com.anhtraixunau.services.StaffPermissionService;
 
 @RestController
 @RequestMapping("admin/api/department")
@@ -187,6 +186,51 @@ public class AdminDepartmentAPI {
 			e.printStackTrace();
 			
 			response.put("message", "Lỗi xóa thông tin phòng ban");
+		}
+		
+		return response;
+	}
+	
+	@GetMapping("getListDepartmentPermissionByDepartmentId/{departmentId}")
+	public Map<String, Object> getListDepartmentPermissionByDepartmentId(@PathVariable("departmentId") Integer departmentId) {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<StaffPermission> listStaffPermission = new ArrayList<StaffPermission>();
+		departmentService = new DepartmentService();
+		
+		try {
+			listStaffPermission = departmentService.getListStaffPermissionByDepartmentId(departmentId);
+			
+			response.put("listStaffPermission", listStaffPermission);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	@GetMapping("getListPermissionIdByDepartmentId/{departmentId}")
+	public Map<String, Object> getListPermissionIdByDepartmentId(@PathVariable("departmentId") Integer departmentId) {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Integer> listPermissionId = new ArrayList<Integer>();
+		StringBuilder strPermissionId = new StringBuilder();
+		departmentService = new DepartmentService();
+		
+		try {
+			listPermissionId = departmentService.getListDepartmentPermissionByDepartmentId(departmentId);
+			if (listPermissionId.size() > 0) {
+				strPermissionId.append(listPermissionId.get(0));
+				
+				for (int i = 1; i < listPermissionId.size(); i++) {
+					strPermissionId.append(',');
+					strPermissionId.append(listPermissionId.get(i));
+				}
+			}
+			
+			response.put("listPermissionId", strPermissionId.toString());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return response;
