@@ -7,6 +7,9 @@
 		<title>Trang chủ</title>
 	</head>
 	<body>
+		<div>
+			<a href="admin/logout">Logout</a>
+		</div>
 		<h3>Giao diện quản lý nội dung</h3>
 		<div>
 			<a href="admin/staff">Quản lý nhân viên</a>

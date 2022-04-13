@@ -1,11 +1,13 @@
 package vn.com.anhtraixunau.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class StaffAccount {
 	private Integer id;
 	private String username;
 	private String password;
+	private String repassword;
 	private Date createDate;
 	private String createUser;
 	private Date updateDate;
@@ -13,7 +15,10 @@ public class StaffAccount {
 	private Date deleteDate;
 	private String deleteUser;
 	private Integer isDelete;
+	private String email;
 	private Staff staff;
+	private StaffAccountTokenVerify staffAccountTokenVerify;
+	private List<StaffPermission> listStaffPermission;
 
 	public StaffAccount() {
 		super();
@@ -114,11 +119,43 @@ public class StaffAccount {
 		this.isDelete = isDelete;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Staff getStaff() {
 		return staff;
 	}
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
+	}
+
+	public StaffAccountTokenVerify getStaffAccountTokenVerify() {
+		return staffAccountTokenVerify;
+	}
+
+	public void setStaffAccountTokenVerify(StaffAccountTokenVerify staffAccountTokenVerify) {
+		this.staffAccountTokenVerify = staffAccountTokenVerify;
+	}
+
+	public List<StaffPermission> getListStaffPermission() {
+		return listStaffPermission;
+	}
+
+	public void setListStaffPermission(List<StaffPermission> listStaffPermission) {
+		this.listStaffPermission = listStaffPermission;
+	}
+
+	public String getRepassword() {
+		return repassword;
+	}
+
+	public void setRepassword(String repassword) {
+		this.repassword = repassword;
 	}
 }

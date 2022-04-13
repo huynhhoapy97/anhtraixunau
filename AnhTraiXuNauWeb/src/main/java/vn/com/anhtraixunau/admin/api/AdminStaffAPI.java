@@ -8,9 +8,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +34,9 @@ import vn.com.anhtraixunau.services.StaffService;
 public class AdminStaffAPI {
 	private StaffService staffService;
 	private StaffAccountService staffAccountService;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	@GetMapping("getListStaffInformation")
 	public Map<String, Object> getListStaffInformation(){
@@ -65,6 +73,7 @@ public class AdminStaffAPI {
 		String lastName = new String();
 		String firstName = new String();
 		String accountUsername = new String();
+		String accountEmail = new String();
 		String permissionId = new String();
 		String userName = new String();
 		int departmentId = -1;
@@ -94,6 +103,7 @@ public class AdminStaffAPI {
 		
 		staffAccount = (HashMap<String, Object>) mapData.get("staffAccount");
 		accountUsername = (String) staffAccount.get("username");
+		accountEmail = (String) staffAccount.get("email");
 		
 		department = (HashMap<String, Object>) mapData.get("department");
 		departmentId = Integer.valueOf(String.valueOf(department.get("id")));
@@ -123,7 +133,7 @@ public class AdminStaffAPI {
 			if (staffId == StaffMessage.DOES_NOT_EXISTS_STAFFID.getId()) {
 				staffId = staffService.insertStaff(lastName, firstName, departmentId, sqlDateStart, userName);
 				
-				staffAccountId = staffAccountService.insertStaffAccount(accountUsername, staffId, userName);
+				staffAccountId = staffAccountService.insertStaffAccount(accountUsername, accountEmail, staffId, userName);
 				
 				for (String staffAccountPermissionId : listPermissionId) {
 					staffAccountService.insertStaffAccountPermission(staffAccountId, Integer.valueOf(staffAccountPermissionId));
@@ -131,6 +141,8 @@ public class AdminStaffAPI {
 			}
 			else {
 				staffService.updateStaff(staffId, lastName, firstName, departmentId, sqlDateStart, userName);
+				
+				staffAccountService.updateStaffAccount(accountUsername, accountEmail, userName);
 				
 				for (int staffAccountPermissionId : listStaffAccountPermissionAdd) {
 					staffAccountService.insertStaffAccountPermission(staffAccountId, staffAccountPermissionId);
@@ -180,6 +192,87 @@ public class AdminStaffAPI {
 			e.printStackTrace();
 			
 			response.put("message", "Lỗi xóa thông tin nhân viên");
+		}
+		
+		return response;
+	}
+	
+	@GetMapping("getListPermissionIdByStaffAccountId/{staffAccountId}")
+	public Map<String, Object> getListPermissionIdByStaffAccountId(@PathVariable("staffAccountId") Integer staffAccountId) {
+		Map<String, Object> response = new HashMap<String, Object>();
+		List<Integer> listPermissionId = new ArrayList<Integer>();
+		StringBuilder strPermissionId = new StringBuilder();
+		staffAccountService = new StaffAccountService();
+		
+		try {
+			listPermissionId = staffAccountService.getListPermissionIdByStaffAccountId(staffAccountId);
+			if (listPermissionId.size() > 0) {
+				strPermissionId.append(listPermissionId.get(0));
+				
+				for (int i = 1; i < listPermissionId.size(); i++) {
+					strPermissionId.append(',');
+					strPermissionId.append(listPermissionId.get(i));
+				}
+			}
+			
+			response.put("listPermissionId", strPermissionId.toString());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	@PostMapping("sendMailActiveAccount")
+	public Map<String, Object> sendMailActiveAccount(@RequestBody StaffAccount staffAccount, HttpServletRequest httpServletRequest) {
+		Map<String, Object> response = new HashMap<String, Object>();
+		int staffAccountId = -1;
+		String staffAccountUsername = "";
+		String staffAccountEmail = "";
+		String staffAccountToken = "";
+		String mailFrom = "";
+		String contentText = "";
+		String queryString = "";
+		String href = "";
+		staffAccountService = new StaffAccountService();
+		
+		try {
+			staffAccountId = staffAccount.getId();
+			staffAccountUsername = staffAccount.getUsername();
+			staffAccountEmail = staffAccount.getEmail();
+			staffAccountToken = UUID.randomUUID().toString();
+			mailFrom = "javamailsender97@gmail.com";
+			queryString = "/staffpassword/changepassword?staffaccountid=" + staffAccountId 
+					+ "&staffaccountusername=" + staffAccountUsername
+					+ "&staffaccounttoken=" + staffAccountToken;
+			href = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" + 
+					  httpServletRequest.getServerPort() + queryString;
+			contentText = "<a href='" + href + "'>Click link</a>";
+			
+			int result = staffAccountService.insertStaffAccountTokenVerify(staffAccountId, staffAccountToken);
+			if (result != -1) {
+				// Gửi mail
+				MimeMessage mimeMessage = mailSender.createMimeMessage();
+				MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
+				
+				mimeMessageHelper.setFrom(mailFrom, "AnhTraiXuNau");
+				mimeMessageHelper.setReplyTo(mailFrom, "AnhTraiXuNau");
+				mimeMessageHelper.setTo(staffAccountEmail);
+				mimeMessageHelper.setSubject("Active staff account");
+				
+				mimeMessage.setContent(contentText, "text/html");
+				
+				mailSender.send(mimeMessage);
+			}
+			
+			response.put("message", "");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			staffAccountService.insertStaffAccountTokenVerify(staffAccountId, "");
+			response.put("message", "Lỗi gửi email kích hoạt tài khoản");
 		}
 		
 		return response;

@@ -38,7 +38,24 @@ public class AdminHomeController {
 	}
 	
 	@GetMapping("index")
-	public String index(ModelMap modelMap) {
+	public String index(ModelMap modelMap, HttpServletRequest httpServletRequest) {
+		viewName = "admin/index";
+		pageName = "login.jsp";
+		message = "";
+		
+		AdminAccount adminAccount = new AdminAccount();
+		modelMap.addAttribute("adminAccount", adminAccount);
+		
+		HttpSession httpSession = httpServletRequest.getSession();
+		if (httpSession.getAttribute("username") != null) {
+			return "redirect:dashboard";
+		}
+		
+		return view(modelMap, viewName, pageName, message);
+	}
+	
+	@GetMapping("login")
+	public String login(ModelMap modelMap) {
 		viewName = "admin/index";
 		pageName = "login.jsp";
 		message = "";
@@ -126,8 +143,8 @@ public class AdminHomeController {
 			int result = adminAccountService.confirmPassword(adminAccount);
 			
 			if (result == AdminAccountMessage.MESSAGE_NO_ERROR.getId()) {
-				pageName = "dashboard.jsp";
-				viewName = "admin/dashboard";
+				/*pageName = "dashboard.jsp";
+				viewName = "admin/dashboard";*/
 				
 				// Lưu Session user đăng nhập
 				HttpSession httpSession = httpServletRequest.getSession();
@@ -138,6 +155,8 @@ public class AdminHomeController {
 					httpSession.setAttribute("username", adminAccount.getUsername());
 					httpSession.setMaxInactiveInterval(60*60*24);
 				}
+				
+				return "redirect:dashboard";
 			}
 			else {
 				for (AdminAccountMessage adminAccountMessage : AdminAccountMessage.values()) {
@@ -153,29 +172,75 @@ public class AdminHomeController {
 		return view(modelMap, viewName, pageName, message);
 	}
 	
+	@GetMapping("dashboard")
+	public String dashboard(ModelMap modelMap, HttpServletRequest httpServletRequest) {
+		viewName = "admin/dashboard";
+		pageName = "";
+		message = "";
+		
+		HttpSession httpSession = httpServletRequest.getSession();
+		if (httpSession.getAttribute("username") == null) {
+			return "redirect:login";
+		}
+		
+		return view(modelMap, viewName, pageName, message);
+	}
+	
 	@GetMapping("department")
-	public String department(ModelMap modelMap) {
+	public String department(ModelMap modelMap, HttpServletRequest httpServletRequest) {
 		viewName = "admin/index";
 		pageName = "department.jsp";
 		message = "";
+		
+		HttpSession httpSession = httpServletRequest.getSession();
+		if (httpSession.getAttribute("username") == null) {
+			return "redirect:login";
+		}
 		
 		return view(modelMap, viewName, pageName, message);
 	}
 	
 	@GetMapping("staffPermission")
-	public String staffPermission(ModelMap modelMap) {
+	public String staffPermission(ModelMap modelMap, HttpServletRequest httpServletRequest) {
 		viewName = "admin/index";
 		pageName = "staffpermission.jsp";
 		message = "";
+		
+		HttpSession httpSession = httpServletRequest.getSession();
+		if (httpSession.getAttribute("username") == null) {
+			return "redirect:login";
+		}
 		
 		return view(modelMap, viewName, pageName, message);
 	}
 	
 	@GetMapping("staff")
-	public String staff(ModelMap modelMap) {
+	public String staff(ModelMap modelMap, HttpServletRequest httpServletRequest) {
 		viewName = "admin/index";
 		pageName = "staff.jsp";
 		message = "";
+		
+		HttpSession httpSession = httpServletRequest.getSession();
+		if (httpSession.getAttribute("username") == null) {
+			return "redirect:login";
+		}
+		
+		return view(modelMap, viewName, pageName, message);
+	}
+	
+	@GetMapping("logout")
+	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest) {
+		viewName = "admin/index";
+		pageName = "login.jsp";
+		message = "";
+		
+		AdminAccount adminAccount = new AdminAccount();
+		modelMap.addAttribute("adminAccount", adminAccount);
+		
+		HttpSession httpSession = httpServletRequest.getSession(false);
+		if (httpSession != null) {
+			httpSession.removeAttribute("username");
+		}
 		
 		return view(modelMap, viewName, pageName, message);
 	}

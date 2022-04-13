@@ -7,6 +7,7 @@ app.controller('StaffController', function($scope, $http) {
 		DOES_NOT_EXISTS_STAFFLASTNAME: '',
 		DOES_NOT_EXISTS_STAFFFIRSTNAME: '',
 		DOES_NOT_EXISTS_STAFFACCOUNTUSERNAME: '',
+		DOES_NOT_EXISTS_STAFFACCOUNTEMAIL: '',
 		STAFF_ACTION_SAVE: 'Save',
 		STAFF_ACTION_UPDATE: 'Update',
 		STAFF_ACTION_CANCEL: 'Cancel',
@@ -108,9 +109,11 @@ app.controller('StaffController', function($scope, $http) {
 		$('#listDepartment').select2();
 		
 		$scope.staff.staffAccount.username = staff.staffAccount.username;
+		$scope.staff.staffAccount.email = staff.staffAccount.email;
 		
 		$scope.changeDepartment(staff.department.id);
-		$scope.getListPermissionIdByDepartmentId(staff.department.id);
+		//$scope.getListPermissionIdByDepartmentId(staff.department.id);
+		$scope.getListPermissionIdByStaffAccountId(staff.staffAccount.id);
 		
 		$scope.staffAction = STAFF.STAFF_ACTION_UPDATE;
 		$scope.staffDelete = STAFF.STAFF_ACTION_DELETE;
@@ -146,12 +149,41 @@ app.controller('StaffController', function($scope, $http) {
 		});
 	}
 	
+	$scope.getListPermissionIdByStaffAccountId = function(staffAccountId) {
+		let url = 'admin/api/staff/getListPermissionIdByStaffAccountId/' + staffAccountId;
+		
+		$http({
+			method: 'GET',
+			url: url
+		}).then(function successCallback(response) {
+			if (response.data) {
+				$scope.staff.listPermissionId = response.data.listPermissionId;		
+				
+				let listPermissionIdSelected = new Array();
+				let listPermissionId = response.data.listPermissionId;
+				if (listPermissionId){
+					listPermissionIdSelected = listPermissionId.split(',');
+				}
+				
+				$('#listStaffPermission').val(listPermissionIdSelected);
+				$('#listStaffPermission').select2();
+			}
+			else {
+				alert('Error getListPermissionIdByStaffAccountId');
+			}
+		}, function errorCallback(response) {
+			console.log(JSON.stringify(response));
+			alert('Error Callback getListPermissionIdByStaffAccountId')
+		});
+	}
+	
 	$scope.completeStaffEdit = function() {
 		let staffId = $scope.staff.id;
 		let lastName = $scope.staff.lastName;
 		let firstName = $scope.staff.firstName;
 		let dateStart = $scope.staff.dateStart;
 		let accountUsername = $scope.staff.staffAccount.username;
+		let accountEnail = $scope.staff.staffAccount.email;
 		let departmentId = $('#listDepartment').val();
 		let listPermissionId = $('#listStaffPermission').val();
 		
@@ -168,7 +200,8 @@ app.controller('StaffController', function($scope, $http) {
 		};
 		
 		let objStaffAccount = {
-			username: accountUsername
+			username: accountUsername,
+			email: accountEnail
 		};
 		
 		let objDepartment = {
@@ -199,6 +232,7 @@ app.controller('StaffController', function($scope, $http) {
 				$scope.staff.lastName = STAFF.DOES_NOT_EXISTS_STAFFLASTNAME;
 				$scope.staff.firstName = STAFF.DOES_NOT_EXISTS_STAFFFIRSTNAME;
 				$scope.staff.staffAccount.username = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTUSERNAME;
+				$scope.staff.staffAccount.email = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTEMAIL;
 				
 				$scope.staffAction = STAFF.STAFF_ACTION_SAVE;
 				$scope.staff.isInsert = STAFF.STAFF_ISINSERT_ON;
@@ -237,6 +271,7 @@ app.controller('StaffController', function($scope, $http) {
 					$scope.staff.lastName = STAFF.DOES_NOT_EXISTS_STAFFLASTNAME;
 					$scope.staff.firstName = STAFF.DOES_NOT_EXISTS_STAFFFIRSTNAME;
 					$scope.staff.staffAccount.username = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTUSERNAME;
+					$scope.staff.staffAccount.email = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTEMAIL;
 					
 					$scope.staffAction = STAFF.STAFF_ACTION_SAVE;
 					$scope.staff.isInsert = STAFF.STAFF_ISINSERT_ON;
@@ -266,6 +301,7 @@ app.controller('StaffController', function($scope, $http) {
 		$scope.staff.lastName = STAFF.DOES_NOT_EXISTS_STAFFLASTNAME;
 		$scope.staff.firstName = STAFF.DOES_NOT_EXISTS_STAFFFIRSTNAME;
 		$scope.staff.staffAccount.username = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTUSERNAME;
+		$scope.staff.staffAccount.email = STAFF.DOES_NOT_EXISTS_STAFFACCOUNTEMAIL;
 		
 		$scope.staffAction = STAFF.STAFF_ACTION_SAVE;
 		$scope.staff.isInsert = STAFF.STAFF_ISINSERT_ON;
@@ -276,6 +312,38 @@ app.controller('StaffController', function($scope, $http) {
 		let listPermissionIdSelected = new Array();
 		$('#listStaffPermission').val(listPermissionIdSelected);
 		$('#listStaffPermission').select2();
+	}
+	
+	$scope.sendMailActiveAccount = function(staffAccountId, staffAccountUsername, staffAccountEmail){
+		console.log(staffAccountId + ' - ' + staffAccountUsername + ' - ' + staffAccountEmail);
+		let url = 'admin/api/staff/sendMailActiveAccount';
+		let data = JSON.stringify({
+			id: staffAccountId,
+			username: staffAccountUsername,
+			email: staffAccountEmail	
+		});
+		
+		$http({
+			method: 'POST',
+			url: url,
+			data: data
+		}).then(function successCallback(response) {
+			if (response.data) {
+				if (!response.data.message){
+					let strId = '#' + staffAccountId;
+					$(strId).html('<span>Đã gửi mail</span>');
+				}
+				else{
+					alert(response.data.message);
+				}
+			}
+			else {
+				alert('Error sendMailActiveAccount');
+			}
+		}, function errorCallback(response) {
+			console.log(JSON.stringify(response));
+			alert('Error Callback sendMailActiveAccount')
+		});
 	}
 	
 	$scope.init();

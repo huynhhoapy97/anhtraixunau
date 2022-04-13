@@ -10,6 +10,7 @@ import vn.com.anhtraixunau.connections.OracleConnection;
 import vn.com.anhtraixunau.models.Department;
 import vn.com.anhtraixunau.models.Staff;
 import vn.com.anhtraixunau.models.StaffAccount;
+import vn.com.anhtraixunau.models.StaffAccountTokenVerify;
 
 public class StaffDAOImpl implements StaffDAO {
 	private OracleConnection oracleConnection;
@@ -43,15 +44,24 @@ public class StaffDAOImpl implements StaffDAO {
 				int staffAccoutnId = resultSet.getInt("sa_id");
 				String staffAccountUsername = resultSet.getString("sa_username");
 				String staffAccountPassword = resultSet.getString("sa_password");
+				String staffAccountEmail = resultSet.getString("sa_email");
+				int staffAccountTokenId = resultSet.getInt("sat_id");
+				String staffAccountToken = resultSet.getString("sat_token");
 				
 				Department department = new Department();
 				department.setId(departmentId);
 				department.setName(departmentName);
 				
+				StaffAccountTokenVerify staffAccountTokenVerify = new StaffAccountTokenVerify();
+				staffAccountTokenVerify.setId(staffAccountTokenId);
+				staffAccountTokenVerify.setToken(staffAccountToken);
+				
 				StaffAccount staffAccount = new StaffAccount();
 				staffAccount.setId(staffAccoutnId);
 				staffAccount.setUsername(staffAccountUsername);
 				staffAccount.setPassword(staffAccountPassword);
+				staffAccount.setEmail(staffAccountEmail);
+				staffAccount.setStaffAccountTokenVerify(staffAccountTokenVerify);
 				
 				Staff staff = new Staff();
 				staff.setId(staffId);

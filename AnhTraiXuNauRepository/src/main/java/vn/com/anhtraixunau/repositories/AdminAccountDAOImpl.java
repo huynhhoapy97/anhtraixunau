@@ -49,7 +49,7 @@ public class AdminAccountDAOImpl implements AdminAccountDAO {
 		try {
 			oracleConnection.setConnection(oracleConnection.connectToOracle());
 			
-			query = "{call atxn_staff_account_upd(?,?,?)}";
+			query = "{call atxn_staff_account_updatepassword(?,?,?)}";
 			oracleConnection.setCallableStatement(oracleConnection.getConnection().prepareCall(query));
 			
 			oracleConnection.getCallableStatement().setString("i_username", username);
