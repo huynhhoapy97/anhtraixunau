@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import vn.com.anhtraixunau.components.CustomAuthenticationSuccessHandler;
 import vn.com.anhtraixunau.services.CustomUserDetailsService;
 
 @Configuration
@@ -17,6 +18,8 @@ import vn.com.anhtraixunau.services.CustomUserDetailsService;
 public class StaffSpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 	
 	/*@Bean("StaffPasswordEncoder")
 	public PasswordEncoder passwordEncoder() {
@@ -51,7 +54,8 @@ public class StaffSpringSecurityConfiguration extends WebSecurityConfigurerAdapt
 			.formLogin()
 				.loginPage("/staff/login").permitAll()
 				.loginProcessingUrl("/staff/login")
-				.defaultSuccessUrl("/staff/dashboard", true)
+				//.defaultSuccessUrl("/staff/dashboard", true)
+				.successHandler(customAuthenticationSuccessHandler)
 				.failureUrl("/staff/login?isSuccess=false")
 				.and()
 			.logout()
