@@ -41,6 +41,7 @@ public class StaffSpringSecurityConfiguration extends WebSecurityConfigurerAdapt
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable();
+		http.headers().frameOptions().disable();
 		
 		http
 			.antMatcher("/staff/**")

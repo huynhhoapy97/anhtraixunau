@@ -2,7 +2,9 @@ package vn.com.anhtraixunau.springconfigurations;
 
 import java.util.Properties;
 
+
 import org.apache.catalina.Context;
+import org.apache.catalina.filters.HttpHeaderSecurityFilter;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
 
 @Configuration
 @EnableWebMvc
@@ -65,6 +68,15 @@ public class SpringMVCConfiguration implements WebMvcConfigurer {
 		properties.put("mail.debug", "true");
 		
 		return mailSender;
+	}
+	
+	@Bean
+	public HttpHeaderSecurityFilter setXFrameHeader() {
+		HttpHeaderSecurityFilter headerSecurityFilter = new HttpHeaderSecurityFilter();
+		
+		headerSecurityFilter.setAntiClickJackingEnabled(false);
+	    
+	    return headerSecurityFilter;
 	}
 	
 	@Override
