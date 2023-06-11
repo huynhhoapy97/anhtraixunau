@@ -11,5 +11,8 @@ subprojects {
 	
 	repositories {
 	    mavenCentral()
+		/*maven {
+			url = 'https://maven.cksource.com/'
+		}*/
 	}
 }

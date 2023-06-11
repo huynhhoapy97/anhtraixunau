@@ -65,7 +65,7 @@ public class OracleConnection {
 			
 			String url = "jdbc:oracle:thin:@localhost:1521/xe";
 			String id = "anhtraixunau";
-			String password = "Hoadeptraipy";
+			String password = "Hoadeptraipy97";
 			
 			connection = DriverManager.getConnection(url, id, password);
 		} 

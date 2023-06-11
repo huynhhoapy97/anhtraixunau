@@ -28,6 +28,7 @@ app.controller('BrandController', function($scope, $http) {
 			entities_latin: false,
 			removeButtons: 'Source'
 		});
+		CKFinder.setupCKEditor(ckeditorDescription, '/resources/ckfinder/');
 		
 		$scope.getListBrandExisting();
 	}
